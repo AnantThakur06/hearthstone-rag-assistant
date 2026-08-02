@@ -23,17 +23,23 @@ if __name__ == "__main__":
     embeddings = model.encode(texts)
     print(embeddings.shape)
 
-    question = "How long do I have to return coffee?"
+   # question = "What water temperature should I use for brewing?"
+   # question = "Do you ship to India?"
+    question = "What is the capital of France?"
+   # question = "How long do I have to return coffee?"
     question_embedding = model.encode(question)
 
     scores = util.cos_sim(question_embedding, embeddings)
     best_index = scores.argmax().item()
-
+    best_score = scores[0][best_index].item()
+    print(f"Score: {best_score:.2f}")
     best_chunk = all_chunks[best_index]
-
-    print("--- QUESTION ---")
-    print(question)
-    print("--- BEST CHUNK ---")
-    print(best_chunk["text"])
-    print("--- SOURCE ---")
-    print(best_chunk["source"])
+    if best_score < 0.35:
+        print("Sorry, I could not find that in the Hearthstone documents.")
+    else:
+        print("--- QUESTION ---")
+        print(question)
+        print("--- BEST CHUNK ---")
+        print(best_chunk["text"])
+        print("--- SOURCE ---")
+        print(best_chunk["source"])
