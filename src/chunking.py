@@ -1,4 +1,4 @@
-from ingestion import read_txt, read_pdf, read_docx
+from src.ingestion import read_txt, read_pdf, read_docx
 
 
 def chunk_text(text, source, chunk_size=500, overlap=50):
