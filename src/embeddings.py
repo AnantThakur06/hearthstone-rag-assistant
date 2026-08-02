@@ -1,8 +1,7 @@
 from sentence_transformers import SentenceTransformer, util
 from chunking import chunk_text
 from ingestion import read_txt, read_pdf, read_docx
-import logging
-logging.getLogger("sentence_transformers").setLevel(logging.ERROR)
+
 model = SentenceTransformer("all-MiniLM-L6-v2")
 
 
@@ -18,6 +17,23 @@ if __name__ == "__main__":
     texts = []
     for chunk in all_chunks:
         texts.append(chunk["text"])
+
+    print(f"Total texts: {len(texts)}")
+
     embeddings = model.encode(texts)
     print(embeddings.shape)
-    print(f"Total texts: {len(texts)}")
+
+    question = "How long do I have to return coffee?"
+    question_embedding = model.encode(question)
+
+    scores = util.cos_sim(question_embedding, embeddings)
+    best_index = scores.argmax().item()
+
+    best_chunk = all_chunks[best_index]
+
+    print("--- QUESTION ---")
+    print(question)
+    print("--- BEST CHUNK ---")
+    print(best_chunk["text"])
+    print("--- SOURCE ---")
+    print(best_chunk["source"])
